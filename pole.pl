@@ -9,7 +9,7 @@ pole(MX, MY) :-
     cisla_center(0, MAX_X, MID_X, X),
     cisla_center(0, MAX_Y, MID_Y, Y),
     generuj(X, Y), 
-    vypis_pole, !.
+    vypis_pole(), !.
 
 cisla_center(Min, Max, Center, List) :-
     findall(N, between(Min, Max, N), Full),
@@ -24,6 +24,14 @@ generuj([H|LX], LY) :- generuj1(H, LY), generuj(LX, LY).
 generuj1(_, []).
 generuj1(H, [H1|LY]) :- assert(s([H, H1], ' ')), generuj1(H, LY).
 
+% obarvi_text(H) -> Colorize text based on value of H
+% H = x -> red, H = o -> green, otherwise -> default color
+obarvi_text(x) :- write('\033[31m'), write('x'), write('\033[0m').
+obarvi_text(o) :- write('\033[32m'), write('o'), write('\033[0m').
+obarvi_text(H) :- 
+    H \= x, H \= o,
+    write(H).
+
 % vypis_radek(Y) -> Write row to console
 % X - nutné mít, protože slouží pro sort. Nové záznamy se totiž vkládají na konec seznamu.
 vypis_radek(Y) :- 
@@ -33,14 +41,8 @@ vypis_radek(Y) :-
 
 vypis_sloupce_radku([]).
 vypis_sloupce_radku([[_,H]|L]) :-
-    print_with_color(H), write(' | '),
+    obarvi_text(H), write(' | '),
     vypis_sloupce_radku(L).
-
-print_with_color(x) :- write('\033[31m'), write('x'), write('\033[0m').
-print_with_color(o) :- write('\033[32m'), write('o'), write('\033[0m').
-print_with_color(H) :- 
-    H \= x, H \= o,
-    write(H).
 
 % vypis_pole() -> Print whole game matrix
 vypis_pole :- 
@@ -52,5 +54,5 @@ vypis_pole :-
 vypis_radky_pole([]).
 vypis_radky_pole([Y|LY]) :- 
     vypis_radek(Y),
-    write('  +'), help:text_pomlcky(10, P), write(P), nl,
+    write('  +'), text_pomlcky(10, P), write(P), nl,
     vypis_radky_pole(LY).
