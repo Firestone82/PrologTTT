@@ -19,3 +19,9 @@ cisla_pomlcky(0, '') :- !.
 cisla_pomlcky(N, S) :-
     N > 0, N1 is N - 1,
     cisla_pomlcky(N1, S1), format(string(S2), ' ~d  ', [N1]), string_concat(S1, S2, S).
+
+% zprava(who, msg1, msg2, result) - who is x -> msg1, otherwise msg2
+zprava(P, M1, M2, R) :- ( P = x -> R = M1 ; R = M2).
+
+vypis([]).
+vypis([X|Y]) :- write(X), nl, vypis(Y).

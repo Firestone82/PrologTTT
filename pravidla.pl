@@ -1,4 +1,3 @@
-:- dynamic pohyb/3, s/2.
 :- ensure_loaded('pole.pl').
 
 % Win position, horizontal
@@ -30,44 +29,66 @@ vyherni_kombinace(4, [X,Y], [X1, Y1], [X2, Y2], [X3, Y3], [X4, Y4]) :-
     X4 is X+4, Y4 is Y-4.
 
 % ----+----+----+----+---- | ---+---+---+---+---
-%  S1 | S2 | S3 | S4 | S5  |    | P | P | P | P
+%  S1 | S2 | S3 | S4 | S5  |    | P | P | P | P 
 % ----+----+----+----+---- | ---+---+---+---+---
-prav_dopln_5xA(P) :-
+prav_5xA :-
     s(S1, ' '), vyherni_kombinace(_, S1, S2, S3, S4, S5),
+    (P = x ; P = o),
     s(S2, P), s(S3, P), s(S4, P), s(S5, P),
-    pohyb(S1, P, 'Dopln 5x (A)').
+    zprava(P, "Complete 5x (A)", "Defence 5x (A)", M),
+    pohyb(S1, x, M).
 
 % ----+----+----+----+---- | ---+---+---+---+---
-%  S1 | S2 | S3 | S4 | S5  |  P |   | P | P | P
+%  S1 | S2 | S3 | S4 | S5  |  P |   | P | P | P 
 % ----+----+----+----+---- | ---+---+---+---+---
-prav_dopln_5xB(P) :-
+prav_5xB :-
     s(S1, P), vyherni_kombinace(_, S1, S2, S3, S4, S5),
+    (P = x ; P = o),
     s(S2, ' '), s(S3, P), s(S4, P), s(S5, P),
-    pohyb(S2, P, 'Dopln 5x (B)').
+    zprava(P, "Complete 5x (B)", "Defence 5x (B)", M),
+    pohyb(S2, x, M).
 
 % ----+----+----+----+---- | ---+---+---+---+---
-%  S1 | S2 | S3 | S4 | S5  |  P | P |   | P | P
+%  S1 | S2 | S3 | S4 | S5  |  P | P |   | P | P 
 % ----+----+----+----+---- | ---+---+---+---+---
-prav_dopln_5xC(P) :-
+prav_5xC :-
     s(S1, P), vyherni_kombinace(_, S1, S2, S3, S4, S5),
+    (P = x ; P = o),
     s(S2, P), s(S3, ' '), s(S4, P), s(S5, P),
-    pohyb(S3, P, 'Dopln 5x (C)').
+    zprava(P, "Complete 5x (C)", "Defence 5x (C)", M),
+    pohyb(S3, x, M).
 
 % ----+----+----+----+---- | ---+---+---+---+---
-%  S1 | S2 | S3 | S4 | S5  |  P | P | P |   | P
+%  S1 | S2 | S3 | S4 | S5  |  P | P | P |   | P 
 % ----+----+----+----+---- | ---+---+---+---+---
-prav_dopln_5xD(P) :-
+prav_5xD :-
     s(S1, P), vyherni_kombinace(_, S1, S2, S3, S4, S5),
+    (P = x ; P = o),
     s(S2, P), s(S3, P), s(S4, ' '), s(S5, P),
-    pohyb(S4, P, 'Dopln 5x (D)').
+    zprava(P, "Complete 5x (D)", "Defence 5x (D)", M),
+    pohyb(S4, x, M).
 
 % ----+----+----+----+---- | ---+---+---+---+---
-%  S1 | S2 | S3 | S4 | S5  |  P | P | P | P |  
+%  S1 | S2 | S3 | S4 | S5  |  P | P | P | P |   
 % ----+----+----+----+---- | ---+---+---+---+---
-prav_dopln_5xE(P) :-
+prav_5xE :-
     s(S1, P), vyherni_kombinace(_, S1, S2, S3, S4, S5),
+    (P = x ; P = o),
     s(S2, P), s(S3, P), s(S4, P), s(S5, ' '),
-    pohyb(S5, P, 'Dopln 5x (E)').
+    zprava(P, "Complete 5x (E)", "Defence 5x (E)", M),
+    pohyb(S5, x, M).
+
+prav_5x :- (prav_5xA ; prav_5xB ; prav_5xC ; prav_5xD ; prav_5xE).
+
+% ----+----+----+----+---- | ---+---+---+---+---
+%  S1 | S2 | S3 | S4 | S5  |    | P | P | P |
+% ----+----+----+----+---- | ---+---+---+---+---
+prav_3x :-
+    s(S1, ' '), vyherni_kombinace(_, S1, S2, S3, S4, S5),
+    (P = x ; P = o),
+    s(S2, P), s(S3, P), s(S4, P), s(S5, ' '),
+    zprava(P, "Complete 3x", "Defence 3x", M),
+    pohyb(S5, P, M).
 
 %     |    | S9 |    |     |    |   |   |   |   
 % ----+----+----+----+---- | ---+---+---+---+---
@@ -78,13 +99,15 @@ prav_dopln_5xE(P) :-
 %     |    | S7 |    |     |    |   | P |   |   
 % ----+----+----+----+---- | ---+---+---+---+---
 %     |    | S6 |    |     |    |   |   |   |   
-prav_kriz(P):- 
+prav_kriz :- 
     s(S1, ' '), vyherni_kombinace(ID1, S1, S2, S3, S4, S5),
+    (P = x ; P = o),
     s(S2, P), s(S3, ' '), s(S4, P), s(S5, ' '),
     s(S6, ' '), vyherni_kombinace(ID2, S6, S7, S3, S8, S9), 
     ID1 \= ID2,
     s(S7, P), s(S8, P), s(S9, ' '),
-    pohyb(S3, P, "Kriz").
+    zprava(P, "Complete Kriz", "Defence Kriz", M),
+    pohyb(S3, P, M).
 
 % Random move, if no other rule applies
 prav_nahodne(P) :- s(S, ' '), pohyb(S, P, "Random").

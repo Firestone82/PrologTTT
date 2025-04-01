@@ -1,9 +1,11 @@
-:- ensure_loaded('help.pl').
-:- dynamic text_pomlcky/2, cisla_pomlcky/2, s/2.
+:- dynamic s/2. % s(cords, player) cords = [X, Y]
+:- dynamic krok/3. % krok(where, player, game_field)
+
+:- include('help.pl').
 
 % pole(maxX, maxY) -> Create field of [maxX, maxY] size
 pole(MX, MY) :-
-    retractall(s([_, _], _)), 
+    retractall(s([_, _], _)),  retractall(krok(_, _, _)), retractall(game(_, _, _)),
     MAX_X is MX - 1, MAX_Y is MY - 1,
     MID_X is MAX_X // 2, MID_Y is MAX_Y // 2,
     cisla_center(0, MAX_X, MID_X, X),
@@ -31,6 +33,14 @@ obarvi_text(o) :- write('\033[32m'), write('o'), write('\033[0m').
 obarvi_text(H) :- 
     H \= x, H \= o,
     write(H).
+
+% souper -> If Im x then o, if o then x
+souper(x, o).
+souper(o, x).
+souper(H, H) :- H \= x, H \= o.
+
+% map(X) -> Map game field into list
+map(X) :- findall([S, H], s(S, H), LX), sort(LX, X).
 
 % vypis_radek(Y) -> Write row to console
 % X - nutné mít, protože slouží pro sort. Nové záznamy se totiž vkládají na konec seznamu.
